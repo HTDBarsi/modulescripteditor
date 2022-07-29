@@ -37,7 +37,7 @@ title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1.000
 title.Size = UDim2.new(1, 0, 0, 20)
 title.Font = Enum.Font.SourceSans
-title.Text = "Module editor v1"
+title.Text = "Script editor v1.1"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
 title.TextSize = 14.000
@@ -49,7 +49,7 @@ TextBox.BorderSizePixel = 0
 TextBox.Position = UDim2.new(0, 0, 1, -3)
 TextBox.Size = UDim2.new(1, -50, 0, 25)
 TextBox.Font = Enum.Font.SourceSans
-TextBox.PlaceholderText = "modulescript path here"
+TextBox.PlaceholderText = "script path here"
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.TextSize = 14.000
@@ -119,7 +119,7 @@ UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 -- Scripts:
 
-local function VYHW_fake_script() -- main_2.Dragify 
+local function XVNURI_fake_script() -- main_2.Dragify 
 	local script = Instance.new('Folder', main_2)
 
 	local UIS = game:GetService("UserInputService")
@@ -160,12 +160,21 @@ local function VYHW_fake_script() -- main_2.Dragify
 	
 	dragify(script.Parent)
 end
-coroutine.wrap(VYHW_fake_script)()
-local function DGZJ_fake_script() -- TextButton.LocalScript 
+coroutine.wrap(XVNURI_fake_script)()
+local function BCGV_fake_script() -- TextButton.LocalScript 
 	local script = Instance.new('Folder', TextButton)
 
 	script.Parent.MouseButton1Click:Connect(function()
-		local a = loadstring("return require("..script.Parent.Parent.Text..")")()
+		script.Parent.Parent.Parent.list.UIListLayout.Parent = script
+		script.Parent.Parent.Parent.list:ClearAllChildren()
+		script.UIListLayout.Parent = script.Parent.Parent.Parent.list
+		local a = nil
+		local t = loadstring("return "..script.Parent.Parent.Text)()
+		if t:IsA("ModuleScript") then
+			a = require(t)
+		else
+			a = getsenv(t)
+		end
 		if type(a) == "table" then
 			for i,v in pairs(a) do 
 				local clone = script.Parent.Parent.Parent.elements.val:Clone()
@@ -186,4 +195,4 @@ local function DGZJ_fake_script() -- TextButton.LocalScript
 		end
 	end)
 end
-coroutine.wrap(DGZJ_fake_script)()
+coroutine.wrap(BCGV_fake_script)()
