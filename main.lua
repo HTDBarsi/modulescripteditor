@@ -11,12 +11,16 @@ local TextButton = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
 local UICorner_2 = Instance.new("UICorner")
 local UICorner_3 = Instance.new("UICorner")
+local list = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
 local elements = Instance.new("Folder")
 local val = Instance.new("Frame")
 local editable = Instance.new("TextBox")
 local value = Instance.new("TextLabel")
-local list = Instance.new("ScrollingFrame")
-local UIListLayout = Instance.new("UIListLayout")
+local tbl = Instance.new("Frame")
+local value_2 = Instance.new("TextLabel")
+local editable_2 = Instance.new("TextButton")
+local shit = Instance.new("Frame")
 
 --Properties:
 
@@ -74,8 +78,20 @@ UICorner_2.Parent = TextBox
 UICorner_3.CornerRadius = UDim.new(0, 5)
 UICorner_3.Parent = main_2
 
+list.Name = "list"
+list.Parent = main_2
+list.Active = true
+list.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+list.BorderColor3 = Color3.fromRGB(0, 0, 0)
+list.BorderSizePixel = 0
+list.Position = UDim2.new(0, 0, 0, 20)
+list.Size = UDim2.new(1, 0, 1, -20)
+
+UIListLayout.Parent = list
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
 elements.Name = "elements"
-elements.Parent = main_2
+elements.Parent = main
 
 val.Name = "val"
 val.Parent = elements
@@ -105,21 +121,45 @@ value.Font = Enum.Font.SourceSans
 value.TextColor3 = Color3.fromRGB(255, 255, 255)
 value.TextSize = 14.000
 
-list.Name = "list"
-list.Parent = main_2
-list.Active = true
-list.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-list.BorderColor3 = Color3.fromRGB(0, 0, 0)
-list.BorderSizePixel = 0
-list.Position = UDim2.new(0, 0, 0, 20)
-list.Size = UDim2.new(1, 0, 1, -20)
+tbl.Name = "tbl"
+tbl.Parent = elements
+tbl.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tbl.BackgroundTransparency = 1.000
+tbl.BorderSizePixel = 0
+tbl.Size = UDim2.new(1, 0, 0, 25)
+tbl.Visible = false
 
-UIListLayout.Parent = list
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+value_2.Name = "value"
+value_2.Parent = tbl
+value_2.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+value_2.BorderSizePixel = 0
+value_2.Size = UDim2.new(0.5, 0, 1, 0)
+value_2.Font = Enum.Font.SourceSans
+value_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+value_2.TextSize = 14.000
+
+editable_2.Name = "editable"
+editable_2.Parent = tbl
+editable_2.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+editable_2.BorderSizePixel = 0
+editable_2.Position = UDim2.new(0.5, 0, 0, 0)
+editable_2.Size = UDim2.new(0.5, 0, 1, 0)
+editable_2.Font = Enum.Font.SourceSans
+editable_2.Text = "table 0x516155aw5"
+editable_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+editable_2.TextSize = 20.000
+editable_2.TextWrapped = true
+
+shit.Name = "shit"
+shit.Parent = elements
+shit.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+shit.BorderSizePixel = 0
+shit.Size = UDim2.new(1, 0, 0, 1)
+shit.Visible = false
 
 -- Scripts:
 
-local function XVNURI_fake_script() -- main_2.Dragify 
+local function SAMIDLA_fake_script() -- main_2.Dragify 
 	local script = Instance.new('Folder', main_2)
 
 	local UIS = game:GetService("UserInputService")
@@ -160,10 +200,89 @@ local function XVNURI_fake_script() -- main_2.Dragify
 	
 	dragify(script.Parent)
 end
-coroutine.wrap(XVNURI_fake_script)()
-local function BCGV_fake_script() -- TextButton.LocalScript 
+coroutine.wrap(SAMIDLA_fake_script)()
+local function PZZGPN_fake_script() -- TextButton.LocalScript 
 	local script = Instance.new('Folder', TextButton)
 
+	function check(i,v,a,t,p)
+		if not t and v ~= "script" and not string.find(tostring(v),"function:") and not string.find(tostring(v),"table:") then
+			local clone = _G.elements.val:Clone()
+			clone.Visible = true
+			clone.Parent = script.Parent.Parent.Parent.list
+			clone.value.Text = tostring(i)
+			clone.editable.Text = tostring(v)
+			clone.editable.FocusLost:Connect(function()
+				if clone.editable.Text == "false" or clone.editable.Text == "False" then
+					a[i] = false
+				elseif clone.editable.Text == "true" or clone.editable.Text == "True" then
+					a[i] = true
+				else
+					a[i] = tonumber(clone.editable.Text) or clone.editable.Text
+				end	
+			end)
+		else
+			if string.find(tostring(v),"table:") then 
+				if t then
+					local clone = _G.elements.tbl:Clone()
+					clone.Visible = true
+					clone.Parent = script.Parent.Parent.Parent.list
+					clone.value.Text = tostring(i)
+					clone.editable.Text = tostring(v)
+					clone.editable.MouseButton1Click:Connect(function()
+						script.Parent.Parent.Parent.list.UIListLayout.Parent = script
+						script.Parent.Parent.Parent.list:ClearAllChildren()
+						script.UIListLayout.Parent = script.Parent.Parent.Parent.list
+						if type(a) == "table" then
+							for i,v in pairs(a) do 
+								if string.find(tostring(v),"table:") then 
+									check(i,v,a,false)
+								else
+									check(i,v,a)
+								end		
+							end
+							local s = _G.elements.shit:Clone()
+							s.Visible = true
+							s.Parent = script.Parent.Parent.Parent.list		
+						end
+						for u,k in pairs(v) do 
+							check(u,k,v,true)
+						end
+					end)
+				else
+					local clone = _G.elements.tbl:Clone()
+					clone.Visible = true
+					clone.Parent = script.Parent.Parent.Parent.list
+					clone.value.Text = tostring(i)
+					clone.editable.Text = tostring(v)
+					clone.editable.MouseButton1Click:Connect(function()
+						script.Parent.Parent.Parent.list.UIListLayout.Parent = script
+						script.Parent.Parent.Parent.list:ClearAllChildren()
+						script.UIListLayout.Parent = script.Parent.Parent.Parent.list
+						if type(a) == "table" then
+							for i,v in pairs(a) do 
+								if string.find(tostring(v),"table:") then 
+									check(i,v,a,false)
+								else
+									check(i,v,a)
+								end		
+							end
+							local s = _G.elements.shit:Clone()
+							s.Visible = true
+							s.Parent = script.Parent.Parent.Parent.list		
+						end
+						for u,k in pairs(v) do
+							if string.find(tostring(k),"table:") then 
+								check(u,k,v,true)
+							else
+								check(u,k,v)
+							end
+						end				
+					end)
+				end
+			end
+		end
+	end
+	
 	script.Parent.MouseButton1Click:Connect(function()
 		script.Parent.Parent.Parent.list.UIListLayout.Parent = script
 		script.Parent.Parent.Parent.list:ClearAllChildren()
@@ -177,22 +296,22 @@ local function BCGV_fake_script() -- TextButton.LocalScript
 		end
 		if type(a) == "table" then
 			for i,v in pairs(a) do 
-				local clone = script.Parent.Parent.Parent.elements.val:Clone()
-				clone.Visible = true
-				clone.Parent = script.Parent.Parent.Parent.list
-				clone.value.Text = tostring(i)
-				clone.editable.Text = tostring(v)
-				clone.editable.FocusLost:Connect(function()
-					if clone.editable.Text == "false" or clone.editable.Text == "False" then
-						a[i] = false
-					elseif clone.editable.Text == "true" or clone.editable.Text == "True" then
-						a[i] = true
-					else
-						a[i] = tonumber(clone.editable.Text) or clone.editable.Text
-					end	
-				end)
+				if string.find(tostring(v),"table:") then 
+					check(i,v,a,false)
+				else
+					check(i,v,a)
+				end		
 			end
+			local s = _G.elements.shit:Clone()
+			s.Visible = true
+			s.Parent = script.Parent.Parent.Parent.list		
 		end
 	end)
 end
-coroutine.wrap(BCGV_fake_script)()
+coroutine.wrap(PZZGPN_fake_script)()
+local function SWZDGN_fake_script() -- main.elements 
+	local script = Instance.new('Folder', main)
+
+	_G.elements = script.Parent.elements
+end
+coroutine.wrap(SWZDGN_fake_script)()
